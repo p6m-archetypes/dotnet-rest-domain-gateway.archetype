@@ -6,6 +6,7 @@
 .DS_Store
 .idea 
 .git 
+.sonarqube
 
 # User-specific files
 *.rsuser
