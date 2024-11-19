@@ -3,7 +3,6 @@ using {{ ProjectName }}.Core.Models;
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
 using {{ service['ProjectName'] }}.API;
-using {{ service['ProjectName'] }}.Client;
 {%- endfor %}
 using Serilog;
 

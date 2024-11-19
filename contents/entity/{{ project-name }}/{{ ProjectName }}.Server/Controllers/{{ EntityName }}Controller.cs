@@ -42,7 +42,7 @@ public class {{ EntityName }}Controller({{ ProjectName }}Core {{ projectName}}) 
     [SwaggerOperation(Summary = "Update {{ entityName }}", Description = "Updates {{ entityName }} by id")]
     [SwaggerResponse(200, "{{ EntityName }} was updated successfully", typeof({{ EntityName }}))]
     [SwaggerResponse(404, "{{ EntityName }} not found by given id")]
-    public {{ entity_name | pascal_case }} Update{{ entity_name | pascal_case }}(Guid id, [FromBody] Update{{ entity_name | pascal_case }}RequestDto request)
+    public {{ entity_name | pascal_case }}? Update{{ entity_name | pascal_case }}(Guid id, [FromBody] Update{{ entity_name | pascal_case }}RequestDto request)
     {
         return {{ projectName }}.Update{{ entity_name | pascal_case }}(id, request);
     }
@@ -51,9 +51,9 @@ public class {{ EntityName }}Controller({{ ProjectName }}Core {{ projectName}}) 
     [SwaggerOperation(Summary = "Delete {{ entityName }}", Description = "Deletes {{ entityName }} by id")]
     [SwaggerResponse(200, "{{ EntityName }} was deleted successfully")]
     [SwaggerResponse(404, "{{ EntityName }} not found by given id")]
-    public void Delete{{ entity_name | pascal_case }}(Guid id)
+    public bool Delete{{ entity_name | pascal_case }}(Guid id)
     {
-        {{ projectName }}.Delete{{ entity_name | pascal_case }}(id);;
+        return {{ projectName }}.Delete{{ entity_name | pascal_case }}(id);
     }
     
 }

@@ -1,7 +1,7 @@
 {% macro core_gateway_constructor_args() -%}
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
-{{ service['ProjectName'] }}Client {{ service['ProjectName'] | camel_case }}{% if not loop.last%}, {% endif %}
+I{{ service['ProjectName'] }} {{ service['ProjectName'] | camel_case }}{% if not loop.last%}, {% endif %}
 {%- endfor %}
 {%- endmacro %}
 
@@ -48,9 +48,172 @@
         return To{{ entity_key | pascal_case }}(response.{{ entity_key | pascal_case }});
     }
 
-    public void Delete{{ entity_key | pascal_case }}(Guid id)
+    public bool Delete{{ entity_key | pascal_case }}(Guid id)
     {
-        
+        Log.Information("Delete {{ entity_key | pascal_case }} {Id}", id);
+        Delete{{ entity_key | pascal_case }}Response response = {{ entity_key | camel_case }}Service.Delete{{ entity_key | pascal_case }}(new Delete{{ entity_key | pascal_case }}Request { Id = id.ToString() }).Result;
+        return response.Deleted;
+    }
+
+{%- endmacro %}
+
+{% macro integration_test_methods(entity_key, entity, model) -%}
+    [Fact]
+    public async void Test_Create{{ entity_key | pascal_case  }}_Success()
+    {
+        //Arrange
+        StubCreate{{ entity_key | pascal_case  }}();
+
+        // Act
+        var queryObject = new
+        {
+            name = _name
+        };
+        var response = await Client.PostAsync("/api/{{ entity_key | camel_case  }}",
+            new StringContent(JsonConvert.SerializeObject(queryObject), Encoding.UTF8, "application/json"));
+        var json = await response.Content.ReadAsStringAsync();
+        TestOutputHelper.WriteLine(json);
+
+
+        //Assert
+        response.EnsureSuccessStatusCode();
+
+        {{ entity_key | pascal_case  }}? {{ entity_key | camel_case  }} = JObject.Parse(json).ToObject<{{ entity_key | pascal_case  }}>();
+
+        Assert.NotNull({{ entity_key | camel_case  }});
+        Assert.Equal({{ entity_key | camel_case  }}.Id.ToString(), _id);
+        Assert.Equal({{ entity_key | camel_case  }}.Name, _name);
+    }
+
+    [Fact]
+    public async void Test_Get{{ entity_key | pascal_case  }}_Success()
+    {
+        //Arrange
+        StubGet{{ entity_key | pascal_case  }}();
+
+        // Act
+        var response = await Client.GetAsync("/api/{{ entity_key | camel_case  }}/" + _id);
+        var responseString = await response.Content.ReadAsStringAsync();
+        TestOutputHelper.WriteLine(responseString);
+
+
+        //Assert
+        response.EnsureSuccessStatusCode();
+
+        {{ entity_key | pascal_case  }}? {{ entity_key | camel_case  }} = JObject.Parse(responseString).ToObject<{{ entity_key | pascal_case  }}>();
+        Assert.NotNull({{ entity_key | camel_case  }});
+        Assert.Equal({{ entity_key | camel_case  }}.Id.ToString(), _id);
+        Assert.Equal({{ entity_key | camel_case  }}.Name, _name);
+    }
+
+
+    [Fact]
+    public async void Test_Get{{ entity_key | pascal_case | pluralize }}_Success()
+    {
+        //Arrange
+        StubGet{{ entity_key | pascal_case | pluralize }}();
+
+        // Act
+        var response = await Client.GetAsync("/api/{{ entity_key | camel_case  }}");
+        var json = await response.Content.ReadAsStringAsync();
+        TestOutputHelper.WriteLine(json);
+
+        //Assert
+        response.EnsureSuccessStatusCode();
+        List<{{ entity_key | pascal_case  }}>? {{ entity_key | camel_case  }}s = JArray.Parse(json).ToObject<List<{{ entity_key | pascal_case  }}>>();
+
+        Assert.NotNull({{ entity_key | camel_case  }}s);
+        Assert.Equal(2, {{ entity_key | camel_case  }}s.Count);
+    }
+
+    [Fact]
+    public async void Test_Update{{ entity_key | pascal_case  }}_Success()
+    {
+        //Arrange
+        StubUpdate{{ entity_key | pascal_case  }}();
+
+        // Act
+        var queryObject = new
+        {
+            name = _name + "_updated"
+        };
+
+        var response = await Client.PutAsync("/api/{{ entity_key | camel_case  }}/" + _id,
+            new StringContent(JsonConvert.SerializeObject(queryObject), Encoding.UTF8, "application/json"));
+        var json = await response.Content.ReadAsStringAsync();
+        TestOutputHelper.WriteLine(json);
+
+
+        //Assert
+        response.EnsureSuccessStatusCode();
+
+        {{ entity_key | pascal_case  }}? {{ entity_key | camel_case  }} = JObject.Parse(json).ToObject<{{ entity_key | pascal_case  }}>();
+        Assert.NotNull({{ entity_key | camel_case  }});
+        Assert.Equal({{ entity_key | camel_case  }}.Id.ToString(), _id);
+        Assert.Equal({{ entity_key | camel_case  }}.Name, _name + "_updated");
+
+        {{ entity_key | pascal_case  }}ServiceMock.Verify(d => d.Update{{ entity_key | pascal_case  }}(new {{ entity_key | pascal_case  }}Dto { Id = _id, Name = _name + "_updated" }),
+            Times.Once());
+    }
+
+    [Fact]
+    public async void Test_Delete{{ entity_key | pascal_case  }}_Success()
+    {
+        //Arrange
+        StubDelete{{ entity_key | pascal_case  }}();
+
+        // Act
+
+        var response = await Client.DeleteAsync("/api/{{ entity_key | camel_case  }}/" + _id);
+        var responseString = await response.Content.ReadAsStringAsync();
+        TestOutputHelper.WriteLine(responseString);
+
+
+        //Assert
+        response.EnsureSuccessStatusCode();
+        {{ entity_key | pascal_case  }}ServiceMock.Verify(d => d.Delete{{ entity_key | pascal_case  }}(It.IsAny<Delete{{ entity_key | pascal_case  }}Request>()), Times.Once());
+    }
+
+    private void StubCreate{{ entity_key | pascal_case  }}()
+    {
+        {{ entity_key | pascal_case  }}ServiceMock.Setup(
+            m => m.Create{{ entity_key | pascal_case  }}(It.IsAny<{{ entity_key | pascal_case  }}Dto>())).Returns(({{ entity_key | pascal_case  }}Dto request) =>
+            Task.FromResult(new Create{{ entity_key | pascal_case  }}Response { {{ entity_key | pascal_case  }} = new {{ entity_key | pascal_case  }}Dto { Id = _id, Name = request.Name } }));
+    }
+
+    private void StubGet{{ entity_key | pascal_case  }}()
+    {
+        {{ entity_key | pascal_case  }}ServiceMock.Setup(
+            m => m.Get{{ entity_key | pascal_case  }}(It.IsAny<Get{{ entity_key | pascal_case  }}Request>())).Returns((Get{{ entity_key | pascal_case  }}Request request) =>
+            Task.FromResult(new Get{{ entity_key | pascal_case  }}Response { {{ entity_key | pascal_case  }} = new {{ entity_key | pascal_case  }}Dto { Id = _id, Name = _name } }));
+    }
+
+    private void StubGet{{ entity_key | pascal_case | pluralize }}()
+    {
+        {{ entity_key | pascal_case  }}ServiceMock.Setup(
+            m => m.Get{{ entity_key | pascal_case | pluralize }}(It.IsAny<Get{{ entity_key | pascal_case | pluralize }}Request>())).Returns((Get{{ entity_key | pascal_case | pluralize }}Request request) =>
+            Task.FromResult(new Get{{ entity_key | pascal_case | pluralize }}Response
+            {
+                {{ entity_key | pascal_case | pluralize }} =
+                {
+                    new {{ entity_key | pascal_case  }}Dto { Id = Guid.NewGuid().ToString(), Name = "test-1" },
+                    new {{ entity_key | pascal_case  }}Dto { Id = Guid.NewGuid().ToString(), Name = "test-2" }
+                }
+            }));
+    }
+
+    private void StubUpdate{{ entity_key | pascal_case  }}()
+    {
+        {{ entity_key | pascal_case  }}ServiceMock.Setup(
+            m => m.Update{{ entity_key | pascal_case  }}(It.IsAny<{{ entity_key | pascal_case  }}Dto>())).Returns(({{ entity_key | pascal_case  }}Dto request) =>
+            Task.FromResult(new Update{{ entity_key | pascal_case  }}Response { {{ entity_key | pascal_case  }} = new {{ entity_key | pascal_case  }}Dto { Id = _id, Name = request.Name } }));
+    }
+
+    private void StubDelete{{ entity_key | pascal_case  }}()
+    {
+        {{ entity_key | pascal_case  }}ServiceMock.Setup(
+            m => m.Delete{{ entity_key | pascal_case  }}(It.IsAny<Delete{{ entity_key | pascal_case  }}Request>())).Returns((Delete{{ entity_key | pascal_case  }}Request request) =>
+            Task.FromResult(new Delete{{ entity_key | pascal_case  }}Response { Deleted = true }));
     }
 
 {%- endmacro %}
