@@ -55,6 +55,5 @@ public class {{ EntityName }}Controller({{ ProjectName }}Core {{ projectName}}) 
     {
         return {{ projectName }}.Delete{{ entity_name | pascal_case }}(id);
     }
-    
 }
 

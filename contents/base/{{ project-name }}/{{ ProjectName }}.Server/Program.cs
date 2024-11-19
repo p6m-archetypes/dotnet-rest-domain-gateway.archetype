@@ -2,6 +2,7 @@ using System.Text.Json;
 using {{ ProjectName }}.Core;
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
+using {{ service['ProjectName'] }}.API;
 using {{ service['ProjectName'] }}.Client;
 {% endfor %}
 using OpenTelemetry.Logs;
