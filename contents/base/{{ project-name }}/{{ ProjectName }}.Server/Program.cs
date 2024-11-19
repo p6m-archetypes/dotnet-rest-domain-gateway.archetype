@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen(c => { c.EnableAnnotations(); });
 
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
-builder.Services.AddSingleton({{ service['ProjectName'] }}Client.Of(builder.Configuration["CoreServices:{{ service['ProjectName'] }}:Url"]));
+builder.Services.AddSingleton<I{{ service['ProjectName'] }}>({{ service['ProjectName'] }}Client.Of(builder.Configuration["CoreServices:{{ service['ProjectName'] }}:Url"]));
 {% endfor %}
 builder.Services.AddSingleton<{{ ProjectName }}Core>();
 
