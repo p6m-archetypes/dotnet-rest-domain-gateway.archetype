@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
 using {{ service['ProjectName']}}.API;
@@ -5,6 +6,7 @@ using {{ service['ProjectName']}}.API;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using {{ ProjectName }}.IntegrationTests.Handlers;
 using Xunit.Abstractions;
 
 namespace {{ ProjectName }}.IntegrationTests;
@@ -41,6 +43,9 @@ public class BaseIntegrationTest : IClassFixture<WebApplicationFactory<Program>>
                 // Add the mocked gRPC service
                 services.AddSingleton<I{{ service['ProjectName']}}>({{ service['ProjectName']}}Mock.Object);
                 {%- endfor %} 
+                // Add Test Authentication
+                services.AddAuthentication("TestAuth")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestAuth", options => { });
             });
         });
 
