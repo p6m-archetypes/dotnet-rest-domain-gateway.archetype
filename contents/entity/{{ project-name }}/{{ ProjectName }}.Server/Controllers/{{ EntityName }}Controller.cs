@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace {{ ProjectName }}.Server.Controllers;
 
 [ApiController]
-[Route("api/{{ entity_name }}")]
+[Route("api/{{ entity_name | pluralize }}")]
 [SwaggerTag("{{ EntityName }} API")]
 public class {{ EntityName }}Controller({{ ProjectName }}Core {{ projectName}}) : ControllerBase
 {

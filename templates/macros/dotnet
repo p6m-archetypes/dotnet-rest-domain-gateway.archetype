@@ -69,7 +69,7 @@ I{{ service['ProjectName'] }} {{ service['ProjectName'] | camel_case }}{% if not
         {
             name = _name
         };
-        var response = await Client.PostAsync("/api/{{ entity_key | camel_case  }}",
+        var response = await Client.PostAsync("/api/{{ entity_key | camel_case | pluralize  }}",
             new StringContent(JsonConvert.SerializeObject(queryObject), Encoding.UTF8, "application/json"));
         var json = await response.Content.ReadAsStringAsync();
         TestOutputHelper.WriteLine(json);
@@ -92,7 +92,7 @@ I{{ service['ProjectName'] }} {{ service['ProjectName'] | camel_case }}{% if not
         StubGet{{ entity_key | pascal_case  }}();
 
         // Act
-        var response = await Client.GetAsync("/api/{{ entity_key | camel_case  }}/" + _id);
+        var response = await Client.GetAsync("/api/{{ entity_key | camel_case | pluralize }}/" + _id);
         var responseString = await response.Content.ReadAsStringAsync();
         TestOutputHelper.WriteLine(responseString);
 
@@ -114,7 +114,7 @@ I{{ service['ProjectName'] }} {{ service['ProjectName'] | camel_case }}{% if not
         StubGet{{ entity_key | pascal_case | pluralize }}();
 
         // Act
-        var response = await Client.GetAsync("/api/{{ entity_key | camel_case  }}");
+        var response = await Client.GetAsync("/api/{{ entity_key | camel_case | pluralize }}");
         var json = await response.Content.ReadAsStringAsync();
         TestOutputHelper.WriteLine(json);
 
@@ -138,7 +138,7 @@ I{{ service['ProjectName'] }} {{ service['ProjectName'] | camel_case }}{% if not
             name = _name + "_updated"
         };
 
-        var response = await Client.PutAsync("/api/{{ entity_key | camel_case  }}/" + _id,
+        var response = await Client.PutAsync("/api/{{ entity_key | camel_case | pluralize }}/" + _id,
             new StringContent(JsonConvert.SerializeObject(queryObject), Encoding.UTF8, "application/json"));
         var json = await response.Content.ReadAsStringAsync();
         TestOutputHelper.WriteLine(json);
@@ -164,7 +164,7 @@ I{{ service['ProjectName'] }} {{ service['ProjectName'] | camel_case }}{% if not
 
         // Act
 
-        var response = await Client.DeleteAsync("/api/{{ entity_key | camel_case  }}/" + _id);
+        var response = await Client.DeleteAsync("/api/{{ entity_key | camel_case | pluralize }}/" + _id);
         var responseString = await response.Content.ReadAsStringAsync();
         TestOutputHelper.WriteLine(responseString);
 
