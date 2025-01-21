@@ -6,7 +6,7 @@ To get started, [install archetect](https://github.com/p6m-dev/development-handb
 and render this template to your current working directory:
 
 ```bash
-archetect render git@github.com:p6m-dev/dotnet-grpc-service.archetype.git
+archetect render git@github.com:p6m-dev/dotnet-rest-domain-gateway.archetype.git
 ```
 
 For information about interacting with the service, refer to the README at the generated
