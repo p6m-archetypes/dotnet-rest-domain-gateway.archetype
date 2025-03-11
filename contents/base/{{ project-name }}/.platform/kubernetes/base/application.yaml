@@ -1,0 +1,32 @@
+apiVersion: meta.p6m.dev/v1alpha1
+kind: PlatformApplication
+metadata:
+  name: {{ artifact-id }}
+  labels:
+    p6m.dev/app: {{ artifact-id }}
+spec:
+  config:
+    SERVER_PORT: "8080" # Service Port
+    MANAGEMENT_SERVER_PORT: "8081" # Management Port
+    LOGGING_STRUCTURED: "true"{% if persistence == 'CockroachDB' %}
+    ConnectionStrings__CockroachDBConnection: "Host=$(crdb_{{ artifact_id }}_db_endpoint);Port=$(crdb_{{ artifact_id }}_db_port);Database={{ artifact_id }}_db;Username=$(crdb_{{ artifact_id }}_db_username);Password=$(crdb_{{ artifact_id }}_db_password);sslmode=require"{% endif %}
+  resources: {% if persistence == 'CockroachDB' %}
+    crdb:
+      - name: {{ artifact-id }}{% else %}{}{% endif %}
+  deployment:
+    image: {{ artifact-id }}-server:latest
+    ports:
+      - protocol: http
+        port: 8080
+      - protocol: http
+        port: 8081
+    readinessProbe:
+      port: 8081
+      path: /health
+  networking:
+    ingress:
+      enabled: true
+      oidc: false
+      path: /api/{{ project-prefix | pluralize}}
+      hostnames: []
+    
