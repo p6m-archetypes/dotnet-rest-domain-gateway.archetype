@@ -39,7 +39,8 @@ app.UseSwaggerUIWithAuth(builder.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers()
+    .AllowAnonymous(); //TODO remove anonymous access once authentication is setup
 app.MapGet("/", () => "{{ ProjectName }}")
     .AllowAnonymous();
 app.MapPrometheusScrapingEndpoint("/metrics")
