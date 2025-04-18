@@ -2,7 +2,7 @@
 
 **// TODO:** Add description of your project's business function.
 
-Generated from the [.NET REST Domain Gateway Archetype](https://github.com/p6m-dev/dotnet-rest-domain-gateway.archetype).
+Generated from the [.NET REST Domain Gateway Archetype](https://github.com/p6m-archetypes/dotnet-rest-domain-gateway.archetype).
 
 [[_TOC_]]
 
