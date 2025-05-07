@@ -31,7 +31,7 @@ public class {{ EntityName }}Controller({{ ProjectName }}Core {{ projectName}}) 
 
     [HttpGet]
     [SwaggerOperation(Summary = "Get all {{ entityName | pluralize }}", Description = "Get all {{ entityName | pluralize }}")]
-    [SwaggerResponse(200, "{{ entityName | pluralize }} was found", typeof({{ EntityName }}))]
+    [SwaggerResponse(200, "{{ entityName | pluralize }} was found", typeof(List<{{ EntityName }}>))]
     public List<{{ entity_name | pascal_case }}> {{ entity_name | pascal_case | pluralize }}()
     {
         return {{ projectName }}.Get{{ entity_name | pascal_case | pluralize }}();
