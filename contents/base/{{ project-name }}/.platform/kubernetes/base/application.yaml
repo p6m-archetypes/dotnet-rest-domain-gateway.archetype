@@ -27,6 +27,6 @@ spec:
     ingress:
       enabled: true
       oidc: false
-      path: /api/{{ project-prefix | pluralize}}
+      path: /
       hostnames: []
     
