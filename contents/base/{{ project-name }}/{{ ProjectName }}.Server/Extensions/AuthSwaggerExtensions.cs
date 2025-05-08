@@ -49,7 +49,8 @@ internal static class AuthSwaggerExtensions
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "{{ project-title }} V1");
+            options.SwaggerEndpoint("/swagger/v1/swagger.yaml", "{{ project-title }} V1");
+            options.RoutePrefix = string.Empty;
 
             options.OAuthClientId(configuration["Security:OAuth2:ClientId"]);
             options.OAuthUsePkce();

@@ -1,9 +1,10 @@
 using {{ ProjectName }}.Core;
+{% if integrate-services == true %}
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
 using {{ service['ProjectName'] }}.API;
 using {{ service['ProjectName'] }}.Client;
-{% endfor %}
+{% endfor %}{% endif %}
 using OpenTelemetry.Logs;
 using {{ ProjectName }}.Server.Extensions;
 using Serilog;
@@ -21,11 +22,11 @@ builder.Logging.AddOpenTelemetry(logging => logging.AddOtlpExporter());
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
-
+{% if integrate-services == true %}
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
 builder.Services.AddSingleton<I{{ service['ProjectName'] }}>({{ service['ProjectName'] }}Client.Of(builder.Configuration["CoreServices:{{ service['ProjectName'] }}:Url"]));
-{% endfor %}
+{% endfor %}{% endif %}
 builder.Services.AddSingleton<{{ ProjectName }}Core>();
 builder.Services.AddHealthChecks();
 builder.Services.AddOpenTelemetryConfig(builder.Configuration);
@@ -41,8 +42,6 @@ app.UseAuthorization();
 
 app.MapControllers()
     .AllowAnonymous(); //TODO remove anonymous access once authentication is setup
-app.MapGet("/", () => "{{ ProjectName }}")
-    .AllowAnonymous();
 app.MapPrometheusScrapingEndpoint("/metrics")
     .AllowAnonymous();
 app.MapHealthChecksConfig("/health")
