@@ -4,10 +4,11 @@ using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using {{ ProjectName }}.Core.Models;
+{% if integrate-services == true %}
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
 using {{ service['ProjectName']}}.API;
-{%- endfor %}
+{%- endfor %}{% endif %}
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit.Abstractions;
 
@@ -19,6 +20,7 @@ public class {{ ProjectName }}Test(ITestOutputHelper testOutputHelper, WebApplic
     private readonly string _id = Guid.NewGuid().ToString();
     private readonly string _name = "name_" + Guid.NewGuid();
 
+    {% if integrate-services == true %}
     {%- for service_key in services -%}
     {% set service = services[service_key] %}
     {%- for entity_key in service.model.entities -%}
@@ -26,4 +28,5 @@ public class {{ ProjectName }}Test(ITestOutputHelper testOutputHelper, WebApplic
     {{ dotnet.integration_test_methods(entity_key, service.model.entities[entity_key], service.model) }}
     {% endfor %}
     {% endfor %}
+    {% endif %}
 }

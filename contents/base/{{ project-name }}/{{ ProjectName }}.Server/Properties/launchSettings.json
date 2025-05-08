@@ -8,11 +8,12 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "Kestrel__Endpoints__Server__Url": "http://localhost:{{ service-port }}",
-        "Kestrel__Endpoints__Management__Url": "http://localhost:{{ management-port }}",
+        "Kestrel__Endpoints__Management__Url": "http://localhost:{{ management-port }}"{% if integrate-services == true %},
+        
         {%- for service_key in services -%}
         {% set service = services[service_key] %}
         "CoreServices__{{ service['ProjectName'] }}__Url": "http://localhost:{{ service['service-port'] }}"
-        {% endfor %}
+        {% endfor %}{% endif %}
       }
     }
   }

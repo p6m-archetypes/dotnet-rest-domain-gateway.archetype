@@ -23,6 +23,13 @@ context += set("management-port", context["service-port"] + 1);
 context += set("debug-port", context["service-port"] + 9);
 context += set("project-language", ".NET");
 
+let projectPrefix = context["project-prefix"];
+
+context += prompt("Integrate with default gRPC Service (" + projectPrefix + "-service)", "integrate-services", #{
+  type: Bool,
+  defaults_with: false
+});
+
 if ANSWERS.services != () {
     context.services = ANSWERS.services;
 } else {

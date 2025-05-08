@@ -217,3 +217,46 @@ I{{ service['ProjectName'] }} {{ service['ProjectName'] | camel_case }}{% if not
     }
 
 {%- endmacro %}
+
+
+{% macro core_implementation_methods_defaults(entity_key, entity, model) -%}
+    public {{ entity_key | pascal_case }} Create{{ entity_key | pascal_case }}(Create{{ entity_key | pascal_case }}RequestDto request)
+    {
+        Log.Information("Create {{ entity_key | pascal_case }} {@request}", request);
+
+        return new {{ entity_key | pascal_case }}{Id = Guid.NewGuid(), Name = request.Name};
+    }
+
+    public List<{{ entity_key | pascal_case }}> Get{{ entity_key | pascal_case | pluralize }}()
+    {
+        Log.Information("Get {{ entity_key | pascal_case | pluralize}}");
+
+        return
+        [
+            new {{ entity_key | pascal_case }}{Id = Guid.NewGuid(), Name = "Test 1"},
+            new {{ entity_key | pascal_case }}{Id = Guid.NewGuid(), Name = "Test 2"}
+        ];
+    }
+
+    public {{ entity_key | pascal_case }}? Get{{ entity_key | pascal_case }}(Guid id)
+    {
+        Log.Information("Get {{ entity_key | pascal_case }} by ID {id}", id);
+
+        return new {{ entity_key | pascal_case }}{Id = id, Name = "Test 1"};
+    }
+
+    public {{ entity_key | pascal_case }}? Update{{ entity_key | pascal_case }}(Guid id, Update{{ entity_key | pascal_case }}RequestDto request)
+    {
+        Log.Information("Update {{ entity_key | pascal_case }} id={id}, request={@request}", id, request);
+
+        return new {{ entity_key | pascal_case }}{Id = id, Name = request.Name};
+    }
+
+    public bool Delete{{ entity_key | pascal_case }}(Guid id)
+    {
+        Log.Information("Delete {{ entity_key | pascal_case }} {Id}", id);
+        
+        return true;
+    }
+
+{%- endmacro %}
