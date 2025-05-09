@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    {% if integrate-services == true %}
+    {% if use-default-service == false %}
     {%- for service_key in services -%}
     {% set service = services[service_key] %}
     <PackageReference Include="{{ service['ProjectName'] }}.Client" Version="1.0.0" />

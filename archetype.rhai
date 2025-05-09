@@ -25,16 +25,7 @@ context += set("project-language", ".NET");
 
 let projectPrefix = context["project-prefix"];
 
-context += prompt("Integrate with default gRPC Service (" + projectPrefix + "-service)", "integrate-services", #{
-  type: Bool,
-  defaults_with: false
-});
-
-if ANSWERS.services != () {
-    context.services = ANSWERS.services;
-} else {
-    context.services = default_services(context);
-}
+context += render(Archetype("grpc-services-integration"), ANSWERS + context , render_settings);
 
 if switch_enabled("debug-context") {
     log(Info, `${archetect::archetype::description()} (${context["project-name"]}) Context:`);
@@ -61,28 +52,6 @@ for service in context.services.values() {
 
 render(Archetype("manifests"), context["artifact-id"], context + #{ "project-suffix": "Domain Gateway"});
 //render(Archetype("gitignore"), context["artifact-id"], #{ "ignore": ["java"]});
-
-fn default_services(context) {
-    let yaml = `
----
-${context["project-prefix"]}:
-  ProjectName: ${context["ProjectPrefix"]}Service
-  project-name: ${context["project-prefix"]}-service
-  service-port: 5030
-  model:
-    entities:
-      ${context["project-prefix"]}:
-        fields:
-          id:
-            optional: false
-            type: String
-          name:
-            optional: false
-            type: String
-`;
-    let model = from_yaml(yaml);
-    model
-}
 
 
 // Return Context

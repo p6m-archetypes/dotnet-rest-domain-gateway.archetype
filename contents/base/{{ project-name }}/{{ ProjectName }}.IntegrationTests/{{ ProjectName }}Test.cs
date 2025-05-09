@@ -4,7 +4,7 @@ using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using {{ ProjectName }}.Core.Models;
-{% if integrate-services == true %}
+{% if use-default-service == false %}
 {%- for service_key in services -%}
 {% set service = services[service_key] %}
 using {{ service['ProjectName']}}.API;
@@ -20,7 +20,7 @@ public class {{ ProjectName }}Test(ITestOutputHelper testOutputHelper, WebApplic
     private readonly string _id = Guid.NewGuid().ToString();
     private readonly string _name = "name_" + Guid.NewGuid();
 
-    {% if integrate-services == true %}
+    {% if use-default-service == false %}
     {%- for service_key in services -%}
     {% set service = services[service_key] %}
     {%- for entity_key in service.model.entities -%}
