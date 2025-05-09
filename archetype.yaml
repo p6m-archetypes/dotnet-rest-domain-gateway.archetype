@@ -4,8 +4,8 @@ authors:
   [
     "Maksym Mukhanov"
   ]
-languages: ["C#"]
-frameworks: ["REST", "OpenAPI"]
+languages: ["C#", ".NET"]
+frameworks: ["REST", "OpenAPI", "Swashbuckle", "OpenTelemetry", "Authentication"]
 tags: ["Modular", "Domain Gateway", "Microservice", "REST"]
 
 requires:
