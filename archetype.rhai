@@ -23,8 +23,6 @@ context += set("management-port", context["service-port"] + 1);
 context += set("debug-port", context["service-port"] + 9);
 context += set("project-language", ".NET");
 
-let projectPrefix = context["project-prefix"];
-
 context += render(Archetype("grpc-services-integration"), ANSWERS + context , render_settings);
 
 if switch_enabled("debug-context") {
