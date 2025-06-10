@@ -39,7 +39,7 @@ This server accepts connections on the following ports:
 - {{ management-port }}: used to monitor the application over HTTP.
 
 ### OpenAPI
-Swagger UI - [/swagger](http://localhost:{{ service-port }}/swagger) 
+Swagger UI - [/swagger](http://localhost:{{ service-port }}) 
 
 ## Management Server
 ### Health Checks
